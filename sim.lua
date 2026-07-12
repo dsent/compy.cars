@@ -4,6 +4,11 @@
 -- Cars start moving the instant "Go!" appears, so the
 -- children's stopwatches and the cars share one zero.
 
+-- finish_units is the finish line of the current heat,
+-- snapshotted when the run starts: a milestone the
+-- teacher adds mid-run neither extends the running heat
+-- nor strands it.
+
 SIM_STATE = {
   phase = "idle",
   elapsed = 0,
@@ -12,6 +17,7 @@ SIM_STATE = {
   extra_milestone = false,
   pause_target = nil,
   pause_fired = false,
+  finish_units = 4,
 }
 
 function simStart()
@@ -21,6 +27,7 @@ function simStart()
     SIM.countdown_steps * SIM.countdown_step_time
   SIM_STATE.go_left = nil
   SIM_STATE.pause_fired = false
+  SIM_STATE.finish_units = milestoneUnits(milestoneCount())
   initCars()
 end
 
@@ -30,6 +37,7 @@ function simReset()
   SIM_STATE.countdown_left = 0
   SIM_STATE.go_left = nil
   SIM_STATE.pause_fired = false
+  SIM_STATE.finish_units = milestoneUnits(milestoneCount())
   initCars()
 end
 
@@ -85,15 +93,18 @@ function updateRunning(dt)
   updateGoOverlay(dt)
   local prev_t = SIM_STATE.elapsed
   SIM_STATE.elapsed = prev_t + dt
-  clampToPauseTarget()
+  clampToPauseTarget(prev_t)
   updateCrossings(prev_t, SIM_STATE.elapsed)
   checkFinish()
 end
 
--- The teacher's pause point fires once per run; the
--- clamp lands the freeze exactly on the target time.
+-- The teacher's pause point fires once per run, and only
+-- when the clock crosses it — a target set behind an
+-- already-running clock waits for the next run instead
+-- of yanking the cars backward. The clamp lands the
+-- freeze exactly on the target time.
 
-function clampToPauseTarget()
+function clampToPauseTarget(prev_t)
   local target = SIM_STATE.pause_target
   if not target then
     return
@@ -101,7 +112,9 @@ function clampToPauseTarget()
   if SIM_STATE.pause_fired then
     return
   end
-  if SIM_STATE.elapsed >= target then
+  local crossed = prev_t < target
+    and target <= SIM_STATE.elapsed
+  if crossed then
     SIM_STATE.elapsed = target
     SIM_STATE.phase = "paused"
     SIM_STATE.pause_fired = true

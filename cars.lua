@@ -32,8 +32,16 @@ function carUnits(i, t)
   return 0.5 * ACCEL * t * t
 end
 
+-- Drawn position: a car parks at the finish line of the
+-- current heat as it arrives, so no car ever drives off
+-- the screen while slower cars are still racing.
+
+function carPos(i, t)
+  return math.min(carUnits(i, t), SIM_STATE.finish_units)
+end
+
 function carX(i, t)
-  return LAYOUT.start_x + carUnits(i, t) * LAYOUT.unit_px
+  return LAYOUT.start_x + carPos(i, t) * LAYOUT.unit_px
 end
 
 function milestoneCount()
@@ -45,8 +53,8 @@ end
 
 function updateCrossings(prev_t, cur_t)
   for i = 1, #CARS do
-    local prev_u = carUnits(i, prev_t)
-    local cur_u = carUnits(i, cur_t)
+    local prev_u = carPos(i, prev_t)
+    local cur_u = carPos(i, cur_t)
     checkCarCrossings(i, prev_u, cur_u)
   end
 end
@@ -77,9 +85,9 @@ function updatePulses(dt)
 end
 
 function allCarsDone(t)
-  local last = milestoneUnits(milestoneCount())
+  local last = SIM_STATE.finish_units
   for i = 1, #CARS do
-    if carUnits(i, t) < last then
+    if carPos(i, t) < last then
       return false
     end
   end

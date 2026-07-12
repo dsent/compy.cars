@@ -30,9 +30,10 @@ cue to stop the stopwatch. An elapsed-time counter in the
 top-right corner runs as a backup for anyone who missed a
 reading.
 
-When every car has passed the last line the run ends by
-itself: the cars stay where they stopped, the counter
-freezes, and a soft chime tells the room the run is over.
+Each car parks at the last line as it arrives, so the whole
+field stays on screen while slower cars finish. When the
+final car parks the run ends by itself: the counter freezes
+and a soft chime tells the room the run is over.
 
 ## Milestone times
 
@@ -67,6 +68,40 @@ For the teacher (hidden, for the prediction rounds):
 Everything else is ignored. There is no score, no losing,
 and nothing to break: reset or relaunch always returns to
 the same initial state.
+
+## Screenshots
+
+Captured from a physical Compy driven over adb.
+
+Ready to start, and the "Go!" moment — the cars are already
+moving while the word lingers:
+
+![Idle](screenshots/idle.png)
+![Go](screenshots/go.png)
+
+Mid-run (6.9 s) and the end of a run, every car parked at
+the last line:
+
+![Running](screenshots/running.png)
+![Done](screenshots/done.png)
+
+The teacher's fifth line, and a run frozen at 8.0 seconds
+with each car's position marked — the red car sits exactly
+on line 2, as the timetable says it should:
+
+![Line 5](screenshots/line5.png)
+![Frozen at 8 seconds](screenshots/frozen-at-8.png)
+
+## Verification
+
+Checked on a physical Compy, driven end-to-end over adb with
+a virtual HID keyboard: full runs, pause/continue, resets,
+bare-Esc immunity, both teacher controls, freeze-and-resume,
+and exit. Two independent runs frozen at 8.0 s produced
+pixel-identical frames — the reproducibility the measurement
+exercise depends on. A headless Lua 5.1 harness additionally
+verifies all sixteen crossing times to ±0.02 s and the full
+state machine.
 
 ## License
 
