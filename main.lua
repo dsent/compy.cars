@@ -12,6 +12,7 @@ dofile("layout.lua")
 dofile("cars.lua")
 dofile("sim.lua")
 dofile("teacher.lua")
+dofile("models.lua")
 dofile("drawing.lua")
 
 initLayout()
@@ -28,9 +29,15 @@ love.mouse.setRelativeMode(true)
 
 MAX_DT = 0.1
 
+-- The pause-time dialog is modal: whatever runs beneath
+-- it freezes while it is open and resumes when it closes.
+
 function love.update(dt)
   if dt > MAX_DT then
     dt = MAX_DT
+  end
+  if P_INPUT.active then
+    return
   end
   simUpdate(dt)
 end
@@ -47,22 +54,13 @@ function doReset()
 end
 
 -- Bare Esc is a right-click on this platform: ignored.
--- Shift+Esc resets (back to idle). Ctrl+Esc leaves the
--- program, so give the cursor back on the way out.
+-- Ctrl+Esc leaves the program, so give the cursor back
+-- on the way out.
 
 function handleEscape()
   if ctrlDown() then
     love.mouse.setRelativeMode(false)
-    return
   end
-  if shiftDown() then
-    doReset()
-  end
-end
-
-function shiftDown()
-  local down = love.keyboard.isDown
-  return down("lshift") or down("rshift")
 end
 
 function ctrlDown()

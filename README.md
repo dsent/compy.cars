@@ -1,11 +1,13 @@
 # Cars — a measurement instrument for Compy
 
-Four cars drive along four lanes. Three hold a constant
-speed; one accelerates. Children time each car with a
-physical stopwatch as it crosses milestone lines, plot the
-readings on paper coordinate grids, and discover that
-steady cars draw straight lines while the accelerating one
-draws a curve.
+Four cars drive along four lanes: a red tractor (constant,
+slow), a blue family sedan (constant, medium), a green
+sports car (constant, fast), and a yellow dragster that
+starts slow and keeps accelerating. Children time each car
+with a physical stopwatch as its nose crosses milestone
+lines, plot the readings on paper coordinate grids, and
+discover that steady cars draw straight lines while the
+dragster draws a curve.
 
 Written for the [Compy](https://github.com/compy-toys/compy/)
 project. This is not a game — it is an apparatus. The screen
@@ -53,17 +55,19 @@ that difference is the lesson.
 For the children:
 
 - `Space` — start the run; pause; continue.
-- `R` — reset everything to the start. Also `Shift+Esc`.
+- `R` — reset everything to the start.
 
-For the teacher (hidden, for the prediction rounds):
+For the teacher (for the prediction rounds):
 
 - `M` — toggle milestone line 5, placed 1.25 spacings past
   line 4, for "when will it arrive?" predictions.
-- `P`, digits, `Enter` — freeze the run at that many seconds.
-  Dashed lines in each car's color mark the frozen positions
-  for "where will it be?" predictions. `P` again clears the
-  pause point. The pause point re-arms on every start until
-  cleared.
+- `P` — opens a prominent centered dialog; type the seconds
+  and press `Enter`. A run beneath the dialog freezes while
+  it is open. When the run reaches the set time it freezes,
+  and dashed lines in each car's color mark the frozen
+  positions for "where will it be?" predictions. `P` again
+  clears the pause point. The pause point re-arms on every
+  start until cleared.
 
 Everything else is ignored. There is no score, no losing,
 and nothing to break: reset or relaunch always returns to
@@ -86,11 +90,16 @@ the last line:
 ![Done](screenshots/done.png)
 
 The teacher's fifth line, and a run frozen at 8.0 seconds
-with each car's position marked — the red car sits exactly
-on line 2, as the timetable says it should:
+with each car's position marked — the red tractor's nose
+sits exactly on line 2, as the timetable says it should:
 
 ![Line 5](screenshots/line5.png)
 ![Frozen at 8 seconds](screenshots/frozen-at-8.png)
+
+The pause-time dialog; a run beneath it freezes while it
+is open:
+
+![Pause dialog](screenshots/pause-dialog.png)
 
 ## Verification
 

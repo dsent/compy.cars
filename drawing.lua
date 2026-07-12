@@ -7,7 +7,9 @@ FONTS = { }
 function initFonts()
   FONTS.label = gfx.newFont(FONT_LABEL)
   FONTS.small = gfx.newFont(FONT_SMALL)
+  FONTS.hint = gfx.newFont(FONT_HINT)
   FONTS.timer = gfx.newFont(FONT_TIMER)
+  FONTS.dialog = gfx.newFont(FONT_DIALOG)
   FONTS.countdown = gfx.newFont(FONT_COUNTDOWN)
 end
 
@@ -33,6 +35,7 @@ function drawScene()
   drawFrozenMarkers()
   drawCountdown()
   drawGoOverlay()
+  drawPauseDialog()
 end
 
 function drawLaneTints()
@@ -85,29 +88,21 @@ function drawOnePulse(i, m, strength)
 end
 
 -- Color-name labels: the text fallback for children who
--- are color-uncertain.
+-- are color-uncertain. Top-left of each lane, clear of
+-- the car glyphs driving along the lane center.
 
 function drawLaneLabels()
   gfx.setFont(FONTS.label)
   for i = 1, #CARS do
     gfx.setColor(carColor(i))
-    local text = CARS[i].name
-    local tw = FONTS.label:getWidth(text)
-    local x = (LAYOUT.start_x - tw) / 2
-    local y = laneY(i) - FONTS.label:getHeight() / 2
-    gfx.print(text, x, y)
+    gfx.print(CARS[i].name, 12, laneTop(i) + 6)
   end
-end
-
-function carRadius()
-  return math.min(LAYOUT.lane_h * 0.22, CAR_RADIUS_MAX)
 end
 
 function drawCars()
   local t = SIM_STATE.elapsed
   for i = 1, #CARS do
-    gfx.setColor(carColor(i))
-    gfx.circle("fill", carX(i, t), laneY(i), carRadius())
+    drawCarGlyph(i, carX(i, t), laneY(i))
   end
 end
 
@@ -127,27 +122,32 @@ HINTS = {
   done = "R: reset",
 }
 
+-- The hint sits on a light pill so it reads at a glance
+-- (black text carries the contrast, the pill the eye).
+
 function drawHint()
-  gfx.setFont(FONTS.small)
-  gfx.setColor(COLOR_DIM)
+  gfx.setFont(FONTS.hint)
   local text = HINTS[SIM_STATE.phase]
-  local tw = FONTS.small:getWidth(text)
-  local y = LAYOUT.height - HINT_BAND_H + 6
-  gfx.print(text, (LAYOUT.width - tw) / 2, y)
+  local tw = FONTS.hint:getWidth(text)
+  local th = FONTS.hint:getHeight()
+  local x = (LAYOUT.width - tw) / 2
+  local y = LAYOUT.height - HINT_BAND_H
+    + (HINT_BAND_H - th) / 2
+  gfx.setColor(Color.with_alpha(Color[Color.white], 0.55))
+  gfx.rectangle("fill", x - 14, y - 4, tw + 28, th + 8, 8)
+  gfx.setColor(COLOR_TEXT)
+  gfx.print(text, x, y)
 end
 
--- Teacher-only pause readout: the digits while typing,
--- the set time while idle. Gone once the run starts.
+-- Teacher-only reminder of a set pause time, while idle.
+-- Gone once the run starts.
 
 function pauseInfoText()
-  if P_INPUT.active then
-    return "Pause: " .. P_INPUT.digits .. "_"
-  end
   local target = SIM_STATE.pause_target
   local idle = SIM_STATE.phase == "idle"
   local show = target and idle
   if show then
-    return string.format("Pause: %ds", target)
+    return string.format("Pause at %ds", target)
   end
   return nil
 end
@@ -157,10 +157,50 @@ function drawPauseInfo()
   if not text then
     return
   end
-  gfx.setFont(FONTS.small)
-  gfx.setColor(COLOR_DIM)
-  local tw = FONTS.small:getWidth(text)
-  gfx.print(text, LAYOUT.width - tw - 100, 8)
+  gfx.setFont(FONTS.label)
+  gfx.setColor(Color.with_alpha(Color[Color.black], 0.6))
+  local tw = FONTS.label:getWidth(text)
+  gfx.print(text, LAYOUT.width - tw - 110, 6)
+end
+
+-- Modal pause-time entry: a dimmed field and a centered
+-- dialog. The run underneath is frozen while it is open
+-- (main gates the update) and resumes when it closes.
+
+function drawPauseDialog()
+  if not P_INPUT.active then
+    return
+  end
+  gfx.setColor(Color.with_alpha(Color[Color.black], 0.25))
+  gfx.rectangle("fill", 0, 0, LAYOUT.width, LAYOUT.height)
+  drawDialogBox()
+end
+
+function drawDialogBox()
+  local w = 520
+  local h = 150
+  local x = (LAYOUT.width - w) / 2
+  local y = (LAYOUT.height - h) / 2
+  gfx.setColor(COLOR_BG)
+  gfx.rectangle("fill", x, y, w, h, 12)
+  gfx.setColor(COLOR_TEXT)
+  gfx.setLineWidth(3)
+  gfx.rectangle("line", x, y, w, h, 12)
+  gfx.setLineWidth(1)
+  drawDialogText(y, h)
+end
+
+function drawDialogText(y, h)
+  gfx.setFont(FONTS.dialog)
+  gfx.setColor(COLOR_TEXT)
+  local text = "Pause at: " .. P_INPUT.digits .. "_ s"
+  local tw = FONTS.dialog:getWidth(text)
+  gfx.print(text, (LAYOUT.width - tw) / 2, y + 22)
+  gfx.setFont(FONTS.hint)
+  gfx.setColor(Color.with_alpha(Color[Color.black], 0.6))
+  local hint = "Enter: set    P: cancel"
+  local hw = FONTS.hint:getWidth(hint)
+  gfx.print(hint, (LAYOUT.width - hw) / 2, y + h - 42)
 end
 
 -- While paused, a dashed line in each car's color marks

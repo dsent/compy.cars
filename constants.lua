@@ -46,16 +46,18 @@ PULSE = {
 
 TINT_ALPHA = 0.07
 
--- Layout (pixels)
+-- Layout (pixels). START_MARGIN is the start line's x:
+-- car bodies extend left of the nose and must fit in it.
 
-LABEL_COL_WIDTH = 112
+START_MARGIN = 112
 RIGHT_MARGIN = 40
-HINT_BAND_H = 30
-CAR_RADIUS_MAX = 24
+HINT_BAND_H = 44
 
 -- Font sizes (pixels)
 
 FONT_LABEL = 18
 FONT_SMALL = 16
+FONT_HINT = 20
 FONT_TIMER = 26
+FONT_DIALOG = 34
 FONT_COUNTDOWN = 120

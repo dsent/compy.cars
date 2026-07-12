@@ -16,7 +16,7 @@ LAYOUT = {
 function initLayout()
   LAYOUT.width, LAYOUT.height = gfx.getDimensions()
   LAYOUT.header_h = FONT_TIMER + 8
-  LAYOUT.start_x = LABEL_COL_WIDTH
+  LAYOUT.start_x = START_MARGIN
   local track = LAYOUT.width - LAYOUT.start_x - RIGHT_MARGIN
   LAYOUT.unit_px = track / EXTRA_MILESTONE_UNITS
   local lanes_h = LAYOUT.height - LAYOUT.header_h
