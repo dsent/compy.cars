@@ -53,7 +53,7 @@ function doReset()
   P_INPUT.active = false
 end
 
--- Bare Esc is a right-click on this platform: ignored.
+-- Bare Esc does nothing.
 -- Ctrl+Esc leaves the program, so give the cursor back
 -- on the way out.
 
