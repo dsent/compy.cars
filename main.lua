@@ -63,7 +63,7 @@ function altDown()
   return down("lalt") or down("ralt")
 end
 
--- Bare Esc does nothing. Ctrl+Alt chords are reserved
+-- Esc does nothing, with or without modifiers. Ctrl+Alt chords are reserved
 -- across Compy games and must never land as in-game input.
 
 function love.keypressed(k)
