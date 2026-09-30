@@ -53,16 +53,6 @@ function doReset()
   P_INPUT.active = false
 end
 
--- Bare Esc does nothing.
--- Ctrl+Esc leaves the program, so give the cursor back
--- on the way out.
-
-function handleEscape()
-  if ctrlDown() then
-    love.mouse.setRelativeMode(false)
-  end
-end
-
 function ctrlDown()
   local down = love.keyboard.isDown
   return down("lctrl") or down("rctrl")
@@ -76,9 +66,10 @@ end
 -- Ctrl+Alt chords are reserved across Compy games and
 -- must never land as in-game input.
 
+-- Bare Esc does nothing.
+
 function love.keypressed(k)
   if k == "escape" then
-    handleEscape()
     return
   end
   local chorded = ctrlDown() or altDown()
