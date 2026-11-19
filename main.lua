@@ -19,9 +19,8 @@ initLayout()
 initFonts()
 initCars()
 
--- Keep the system pointer off the screen edges so the
--- Android bars never reveal; cars uses no mouse at all.
--- TODO(root-access): replace with trackpad disable.
+-- Cars uses no mouse: relative mode keeps the system
+-- pointer out of the picture.
 
 love.mouse.setRelativeMode(true)
 
