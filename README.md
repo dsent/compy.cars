@@ -56,13 +56,15 @@ For the children:
 
 - `Space` — start the run; pause; continue.
 - `R` — reset everything to the start.
+- `Esc` — leave for the console.
 
 For the teacher (for the prediction rounds):
 
 - `M` — toggle milestone line 5, placed 1.25 spacings past
   line 4, for "when will it arrive?" predictions.
 - `P` — opens a prominent centered dialog; type the seconds
-  and press `Enter`. A run beneath the dialog freezes while
+  and press `Enter`, or `Esc` to clear the digits and then
+  close the dialog. A run beneath the dialog freezes while
   it is open. When the run reaches the set time it freezes,
   and dashed lines in each car's color mark the frozen
   positions for "where will it be?" predictions. `P` again
@@ -103,14 +105,10 @@ is open:
 
 ## Verification
 
-Checked on a physical Compy, driven end-to-end over adb with
-a virtual HID keyboard: full runs, pause/continue, resets,
-bare-Esc immunity, both teacher controls, freeze-and-resume,
-and exit. Two independent runs frozen at 8.0 s produced
-pixel-identical frames — the reproducibility the measurement
-exercise depends on. A headless Lua 5.1 harness additionally
-verifies all sixteen crossing times to ±0.02 s and the full
-state machine.
+Two independent runs frozen at 8.0 s produced pixel-identical
+frames — the reproducibility the measurement exercise depends
+on. A headless Lua 5.1 harness verifies all sixteen crossing
+times to ±0.02 s and the full state machine.
 
 ## License
 

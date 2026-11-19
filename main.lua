@@ -62,8 +62,24 @@ function altDown()
   return down("lalt") or down("ralt")
 end
 
--- Esc does nothing, with or without modifiers. Ctrl+Alt chords are reserved
--- across Compy games and must never land as in-game input.
+-- Bare Esc empties the pause-time field, closes it when empty,
+-- or leaves the program.
+
+function goBack()
+  if not P_INPUT.active then
+    stop()
+  elseif P_INPUT.digits ~= "" then
+    P_INPUT.digits = ""
+  else
+    P_INPUT.active = false
+  end
+end
+
+compy.input.shortcuts.keypressed.escape = compy.input.fn.
+    stop_here(compy.input.fn.ignore_repeat(goBack))
+
+-- Ctrl+Alt chords are reserved across Compy games and must
+-- never land as in-game input.
 
 function love.keypressed(k)
   if k == "escape" then
