@@ -198,7 +198,7 @@ function drawDialogText(y, h)
   gfx.print(text, (LAYOUT.width - tw) / 2, y + 22)
   gfx.setFont(FONTS.hint)
   gfx.setColor(Color.with_alpha(Color[Color.black], 0.6))
-  local hint = "Enter: set    P: cancel"
+  local hint = "Enter: set    Esc: cancel"
   local hw = FONTS.hint:getWidth(hint)
   gfx.print(hint, (LAYOUT.width - hw) / 2, y + h - 42)
 end
